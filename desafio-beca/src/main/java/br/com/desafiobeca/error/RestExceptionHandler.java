@@ -15,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import br.com.desafiobeca.exceptions.AtualizaPessoaException;
 import br.com.desafiobeca.exceptions.AtualizarVagaException;
 import br.com.desafiobeca.exceptions.TicketInvalidoException;
 
@@ -75,6 +76,11 @@ public class RestExceptionHandler {
 
 	@ExceptionHandler(AtualizarVagaException.class)
 	public ResponseEntity<String> getErrorResponse(AtualizarVagaException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+	}
+
+	@ExceptionHandler(AtualizaPessoaException.class)
+	public ResponseEntity<String> getErrorResponse(AtualizaPessoaException e) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 	}
 

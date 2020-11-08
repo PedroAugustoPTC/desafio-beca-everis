@@ -9,6 +9,7 @@ import javax.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.desafiobeca.exceptions.AtualizaPessoaException;
 import br.com.desafiobeca.model.Funcionario;
 import br.com.desafiobeca.repository.FuncionarioRepository;
 import br.com.desafiobeca.service.FuncionarioService;
@@ -36,8 +37,8 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 	public Funcionario atualizar(Funcionario funcionario) {
 		if (pessoaService.verificarPessoa(funcionario)) {
 			return funcionarioRepository.save(funcionario);
-		} else {
-			throw new IllegalArgumentException("Esse funcionario não existe");
+		} else { 
+			throw new AtualizaPessoaException("Esse funcionario não existe");
 		}
 	}
 
@@ -49,13 +50,13 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 	@Override
 	public Optional<Funcionario> listarPorId(Long id) {
 		Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
-		if(funcionario.isPresent()) {
+		if (funcionario.isPresent()) {
 			return funcionario;
-		}else {
+		} else {
 			throw new NullPointerException("Funcionario não encontrado");
 		}
 	}
-	
+
 	@Override
 	public Funcionario listarPorCpf(String cpf) {
 		Funcionario funcionario = funcionarioRepository.findByCpf(cpf);
@@ -65,7 +66,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 			throw new NullPointerException("Funcionário não encontrado");
 		}
 	}
-	
+
 	@Override
 	public List<Funcionario> listarPorNome(String nome) {
 		List<Funcionario> funcionario = new ArrayList<Funcionario>();

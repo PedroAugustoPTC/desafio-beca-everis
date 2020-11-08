@@ -25,7 +25,6 @@ class VeiculoServiceImplTest {
 
 	private Veiculo veiculo;
 	private Pessoa proprietario;
-	private Pessoa pessoaErrada;
 	private List<Veiculo> lista;
 	private Optional<Veiculo> resultado;
 
@@ -73,29 +72,6 @@ class VeiculoServiceImplTest {
 		});
 
 		String mensagemEsperada = "Veículo já cadastrado";
-		String mensagemAtual = exception.getMessage();
-
-		assertTrue(mensagemAtual.contains(mensagemEsperada));
-
-	}
-
-	@Test
-	void testSalvarNullPointerException() {
-		pessoaErrada = new Pessoa();
-		proprietario.setId(2L);
-		proprietario.setNome("Carlos");
-		proprietario.setCpf("143.333.476-48");
-		proprietario.setEmail("sddsadas@dasdas");
-		proprietario.setTelefone("(034)999506807");
-
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			Mockito.when(pessoaService.listarPorCpf(proprietario.getCpf())).thenReturn(pessoaErrada);
-			Mockito.when(veiculoRepository.existsByPlaca(veiculo.getPlaca())).thenReturn(false);
-			Mockito.when(veiculoRepository.save(veiculo)).thenReturn(veiculo);
-			assertEquals(veiculo, veiculoService.salvar(veiculo));
-		});
-
-		String mensagemEsperada = "Proprietário não cadastrado";
 		String mensagemAtual = exception.getMessage();
 
 		assertTrue(mensagemAtual.contains(mensagemEsperada));

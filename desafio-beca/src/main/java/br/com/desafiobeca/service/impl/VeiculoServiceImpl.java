@@ -8,7 +8,6 @@ import javax.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.desafiobeca.model.Pessoa;
 import br.com.desafiobeca.model.Veiculo;
 import br.com.desafiobeca.repository.VeiculoRepository;
 import br.com.desafiobeca.service.VeiculoService;
@@ -24,15 +23,11 @@ public class VeiculoServiceImpl implements VeiculoService {
 
 	@Override
 	public Veiculo salvar(Veiculo veiculo) {
-		Pessoa pessoa = pessoaService.listarPorCpf(veiculo.getProprietario().getCpf());
+		pessoaService.listarPorCpf(veiculo.getProprietario().getCpf());
 		if (veiculoRepository.existsByPlaca(veiculo.getPlaca())) {
 			throw new EntityExistsException("Veículo já cadastrado");
-		} else if (!(pessoa.equals(veiculo.getProprietario()))) {
-			throw new NullPointerException("Proprietário não cadastrado");
-		} else {
+		} else
 			return veiculoRepository.save(veiculo);
-		}
-
 	}
 
 	@Override
