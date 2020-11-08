@@ -42,7 +42,7 @@ public class TicketController {
 
 	@RequestMapping(value = "listar/id={id}", method = RequestMethod.GET)
 	public ResponseEntity<Ticket> listarTicketPorId(@RequestBody @PathVariable Long id) {
-		return ResponseEntity.status(HttpStatus.OK).body(ticketService.listarPorId(id));
+		return ResponseEntity.status(HttpStatus.OK).body(ticketService.listarPorId(id).get());
 	}
 
 	@RequestMapping(value = "listar/placa={placa}", method = RequestMethod.GET)

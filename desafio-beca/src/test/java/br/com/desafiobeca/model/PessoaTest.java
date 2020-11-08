@@ -19,13 +19,6 @@ class PessoaTest {
 		pessoa.setCpf("143.313.476-48");
 		pessoa.setEmail("sddsadas@dasdas");
 		pessoa.setTelefone("(034)999506807");
-
-		pessoa2 = new Pessoa();
-		pessoa2.setId(1L);
-		pessoa2.setNome("Pedro");
-		pessoa2.setCpf("143.313.476-48");
-		pessoa2.setEmail("sddsadas@dasdas");
-		pessoa2.setTelefone("(034)999506807");
 	}
 
 	@Test
@@ -55,8 +48,26 @@ class PessoaTest {
 
 	@Test
 	void testEqualsObject() {
-		boolean teste = pessoa.equals(pessoa2);
-		assertEquals(true, teste);
+		pessoa2 = new Pessoa();
+		pessoa2.setId(1L);
+		pessoa2.setNome("Pedro");
+		pessoa2.setCpf("143.313.476-48");
+		pessoa2.setEmail("sddsadas@dasdas");
+		pessoa2.setTelefone("(034)999506807");
+
+		assertEquals(true, pessoa.equals(pessoa2));
+	}
+
+	@Test
+	void testHashCode() {
+		pessoa2 = new Pessoa();
+		pessoa2.setId(1L);
+		pessoa2.setNome("Pedro");
+		pessoa2.setCpf("143.313.476-48");
+		pessoa2.setEmail("sddsadas@dasdas");
+		pessoa2.setTelefone("(034)999506807");
+
+		assertEquals(pessoa.hashCode(), pessoa2.hashCode());
 	}
 
 }

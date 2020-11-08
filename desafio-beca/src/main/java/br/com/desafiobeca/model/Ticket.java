@@ -87,4 +87,60 @@ public class Ticket {
 	public void setHorarioSaida(LocalDateTime horarioSaida) {
 		this.horarioSaida = horarioSaida;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((horarioEntrada == null) ? 0 : horarioEntrada.hashCode());
+		result = prime * result + ((horarioSaida == null) ? 0 : horarioSaida.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((vaga == null) ? 0 : vaga.hashCode());
+		result = prime * result + ((valorTotal == null) ? 0 : valorTotal.hashCode());
+		result = prime * result + ((veiculo == null) ? 0 : veiculo.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Ticket other = (Ticket) obj;
+		if (horarioEntrada == null) {
+			if (other.horarioEntrada != null)
+				return false;
+		} else if (!horarioEntrada.equals(other.horarioEntrada))
+			return false;
+		if (horarioSaida == null) {
+			if (other.horarioSaida != null)
+				return false;
+		} else if (!horarioSaida.equals(other.horarioSaida))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (vaga == null) {
+			if (other.vaga != null)
+				return false;
+		} else if (!vaga.equals(other.vaga))
+			return false;
+		if (valorTotal == null) {
+			if (other.valorTotal != null)
+				return false;
+		} else if (!valorTotal.equals(other.valorTotal))
+			return false;
+		if (veiculo == null) {
+			if (other.veiculo != null)
+				return false;
+		} else if (!veiculo.equals(other.veiculo))
+			return false;
+		return true;
+	}
+
 }

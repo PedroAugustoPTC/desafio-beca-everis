@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ class TicketControllerTest {
 	LocalDateTime entrada;
 	LocalDateTime saida;
 	List<Ticket> lista;
+	private Optional<Ticket> resultado;
 
 	@InjectMocks
 	private TicketController ticketController;
@@ -60,6 +62,8 @@ class TicketControllerTest {
 
 		lista = new ArrayList<>();
 		lista.add(ticket);
+
+		resultado = Optional.of(ticket);
 	}
 
 	@Test
@@ -83,7 +87,7 @@ class TicketControllerTest {
 
 	@Test
 	void testListarTicketPorId() {
-		Mockito.when(ticketService.listarPorId(ticket.getId())).thenReturn(ticket);
+		Mockito.when(ticketService.listarPorId(ticket.getId())).thenReturn(resultado);
 		assertNotNull(ticketController.listarTicketPorId(ticket.getId()));
 	}
 

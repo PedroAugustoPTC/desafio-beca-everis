@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import br.com.desafiobeca.service.impl.VeiculoServiceImpl;
 class VeiculoControllerTest {
 
 	private Veiculo veiculo;
+	Optional<Veiculo> resultado;
 
 	@InjectMocks
 	private VeiculoController veiculoController;
@@ -33,6 +35,7 @@ class VeiculoControllerTest {
 		veiculo.setPlaca("WER-3456");
 		veiculo.setProprietario(null);
 
+		resultado = Optional.of(veiculo);
 	}
 
 	@Test
@@ -56,7 +59,7 @@ class VeiculoControllerTest {
 
 	@Test
 	void testListarVeiculoPorIdLong() {
-		Mockito.when(veiculoServiceImpl.listarPorId(veiculo.getId())).thenReturn(veiculo);
+		Mockito.when(veiculoServiceImpl.listarPorId(veiculo.getId())).thenReturn(resultado);
 		assertNotNull(veiculoController.listarVeiculoPorId(veiculo.getId()));
 	}
 

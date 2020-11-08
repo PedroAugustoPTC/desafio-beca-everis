@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 class TicketTest {
 
 	private Ticket ticket;
+	private Ticket ticket2;
 	private Veiculo veiculo;
 	private Vaga vaga;
 	LocalDateTime entrada;
@@ -71,6 +72,24 @@ class TicketTest {
 	@Test
 	void testSetHorarioSaida() {
 		assertEquals(saida, ticket.getHorarioSaida());
+	}
+
+	@Test
+	void testEqualsObject() {
+		ticket2 = new Ticket(veiculo, vaga, entrada);
+		ticket2.setId(1L);
+		ticket2.setValoTotal(3.0);
+		ticket2.setHorarioSaida(saida);
+		assertEquals(true, ticket.equals(ticket2));
+	}
+
+	@Test
+	void testHashCode() {
+		ticket2 = new Ticket(veiculo, vaga, entrada);
+		ticket2.setId(1L);
+		ticket2.setValoTotal(3.0);
+		ticket2.setHorarioSaida(saida);
+		assertEquals(ticket2.hashCode(), ticket.hashCode());
 	}
 
 }

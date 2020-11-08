@@ -1,13 +1,12 @@
 package br.com.desafiobeca.service.impl;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import javax.persistence.EntityExistsException;
 
@@ -18,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import br.com.desafiobeca.exceptions.AtualizarVagaException;
 import br.com.desafiobeca.model.Vaga;
 import br.com.desafiobeca.repository.VagaRepository;
 
@@ -26,6 +24,7 @@ class VagaServiceImplTest {
 
 	Vaga vaga;
 	List<Vaga> lista;
+	Optional<Vaga> resultado;
 
 	@InjectMocks
 	private VagaServiceImpl vagaService;
@@ -42,6 +41,7 @@ class VagaServiceImplTest {
 		vaga.setOcupada(false);
 
 		lista = new ArrayList<>();
+		resultado = Optional.of(vaga);
 	}
 
 	@Test
@@ -76,26 +76,25 @@ class VagaServiceImplTest {
 	@Test
 	void testListarTodasVagasQuandoNaoOuverNinguemNoSistema() {
 		Mockito.when(vagaRepository.findAll()).thenReturn(lista);
-		assertNotNull(vagaService.listarTodasVagas());
+		assertEquals(lista, vagaService.listarTodasVagas());
 	}
 
 	@Test
 	void testAtualizar() {
-		Mockito.when(vagaService.listarPorId(vaga.getId())).thenReturn(vaga);
-		Mockito.when(vagaRepository.findByNumeroVaga(vaga.getNumeroVaga())).thenReturn(vaga);
+		Mockito.when(vagaRepository.findById(vaga.getId())).thenReturn(resultado);
 		Mockito.when(vagaRepository.save(vaga)).thenReturn(vaga);
-		assertEquals(vaga.getNumeroVaga(), vagaService.atualizar(vaga).getNumeroVaga());
-		assertEquals(vaga.isOcupada(), vagaService.atualizar(vaga).isOcupada());
+		Mockito.when(vagaRepository.existsByNumeroVaga(vaga.getNumeroVaga())).thenReturn(false);
+		assertEquals(vaga, vagaService.atualizar(vaga));
 	}
 
 	@Test
 	void testAtualizarException() {
-		Exception exception = assertThrows(AtualizarVagaException.class, () -> {
-			Mockito.when(vagaService.listarPorId(vaga.getId())).thenReturn(vaga);
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			Mockito.when(vagaRepository.findById(vaga.getId())).thenReturn(Optional.empty());
 			vagaService.atualizar(vaga);
 		});
 
-		String mensagemEsperada = "Verifique se essa vaga existe ou se não está ocupada ";
+		String mensagemEsperada = "Vaga não encontrada";
 		String mensagemAtual = exception.getMessage();
 
 		assertTrue(mensagemAtual.contains(mensagemEsperada));
@@ -103,16 +102,21 @@ class VagaServiceImplTest {
 
 	@Test
 	void testListarPorId() {
-		Mockito.when(vagaRepository.findById(vaga.getId()).get()).thenReturn(vaga);
-		assertEquals(vaga, vagaService.listarPorId(vaga.getId()));
+		Mockito.when(vagaRepository.findById(vaga.getId())).thenReturn(resultado);
+		assertEquals(resultado, vagaService.listarPorId(vaga.getId()));
 	}
 
 	@Test
 	void testListarPorIdException() {
-		assertThrows(NoSuchElementException.class, () -> {
-			Mockito.when(vagaRepository.findById(vaga.getId()).get()).thenReturn(null);
-			assertEquals(vaga, vagaService.listarPorId(vaga.getId()));
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			Mockito.when(vagaRepository.findById(vaga.getId())).thenReturn(Optional.empty());
+			vagaService.listarPorId(vaga.getId());
 		});
+
+		String mensagemEsperada = "Vaga não encontrada";
+		String mensagemAtual = exception.getMessage();
+
+		assertTrue(mensagemAtual.contains(mensagemEsperada));
 	}
 
 	@Test
@@ -150,9 +154,17 @@ class VagaServiceImplTest {
 	}
 
 	@Test
-	void testAtualizaEstadoVaga() {
+	void testAtualizaEstadoVagaTrue() {
 		Mockito.when(vagaRepository.save(vaga)).thenReturn(vaga);
-		Mockito.when(vagaService.listarPorId(vaga.getId())).thenReturn(vaga);
+		Mockito.when(vagaRepository.findById(vaga.getId())).thenReturn(resultado);
+		assertEquals(vaga, vagaService.atualizaEstadoVaga(vaga.getId()));
+	}
+
+	@Test
+	void testAtualizaEstadoVagaFalse() {
+		vaga.setOcupada(true);
+		Mockito.when(vagaRepository.save(vaga)).thenReturn(vaga);
+		Mockito.when(vagaRepository.findById(vaga.getId())).thenReturn(resultado);
 		assertEquals(vaga, vagaService.atualizaEstadoVaga(vaga.getId()));
 	}
 

@@ -40,7 +40,7 @@ public class VeiculoController {
 
 	@RequestMapping(value = "listar/id={id}", method = RequestMethod.GET)
 	public ResponseEntity<Veiculo> listarVeiculoPorId(@RequestBody @PathVariable Long id) {
-		return ResponseEntity.status(HttpStatus.OK).body(veiculoService.listarPorId(id));
+		return ResponseEntity.status(HttpStatus.OK).body(veiculoService.listarPorId(id).get());
 	}
 
 	@RequestMapping(value = "listar/placa={placa}", method = RequestMethod.GET)

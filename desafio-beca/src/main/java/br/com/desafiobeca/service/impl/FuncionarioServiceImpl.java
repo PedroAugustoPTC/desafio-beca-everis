@@ -2,6 +2,7 @@ package br.com.desafiobeca.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityExistsException;
 
@@ -42,9 +43,13 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 		return funcionarioRepository.findAll();
 	}
 
-	public Funcionario listarPorId(Long id) {
-		Funcionario funcionario = funcionarioRepository.findById(id).get();
-		return funcionario;
+	public Optional<Funcionario> listarPorId(Long id) {
+		Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
+		if(funcionario.isPresent()) {
+			return funcionario;
+		}else {
+			throw new NullPointerException("Funcionario não encontrado");
+		}
 	}
 
 	public Funcionario listarPorCpf(String cpf) {

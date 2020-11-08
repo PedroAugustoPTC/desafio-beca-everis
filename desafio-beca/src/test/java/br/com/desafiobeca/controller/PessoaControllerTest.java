@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,8 @@ class PessoaControllerTest {
 
 	private Pessoa pessoa;
 
+	private Optional<Pessoa> resultado;
+
 	@BeforeEach
 	void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -34,6 +37,8 @@ class PessoaControllerTest {
 		pessoa.setCpf("143.313.476-48");
 		pessoa.setEmail("sddsadas@dasdas");
 		pessoa.setTelefone("(034)999506807");
+
+		resultado = Optional.of(pessoa);
 	}
 
 	@Test
@@ -60,7 +65,7 @@ class PessoaControllerTest {
 
 	@Test
 	void testListarPessoaPorId() {
-		Mockito.when(pessoaService.listarPorId(pessoa.getId())).thenReturn(pessoa);
+		Mockito.when(pessoaService.listarPorId(pessoa.getId())).thenReturn(resultado);
 		assertNotNull(pessoaController.listarPessoaPorId(pessoa.getId()));
 	}
 

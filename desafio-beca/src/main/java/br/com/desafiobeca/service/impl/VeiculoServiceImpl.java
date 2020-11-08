@@ -1,6 +1,7 @@
 package br.com.desafiobeca.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityExistsException;
 
@@ -37,8 +38,8 @@ public class VeiculoServiceImpl implements VeiculoService {
 		return veiculoRepository.findAll();
 	}
 
-	public Veiculo listarPorId(Long id) {
-		return veiculoRepository.findById(id).get();
+	public Optional<Veiculo> listarPorId(Long id) {
+		return veiculoRepository.findById(id);
 	}
 
 	public Veiculo listarVeiculoPorPlaca(String placa) {

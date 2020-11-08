@@ -1,13 +1,11 @@
 package br.com.desafiobeca.service.impl;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.persistence.EntityExistsException;
@@ -32,6 +30,7 @@ class PessoaServiceImplTest {
 
 	private Pessoa pessoa;
 	List<Pessoa> lista;
+	Optional<Pessoa> resultado;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -42,8 +41,6 @@ class PessoaServiceImplTest {
 		pessoa.setCpf("143.313.476-48");
 		pessoa.setEmail("sddsadas@dasdas");
 		pessoa.setTelefone("(034)999506807");
-
-		lista = new ArrayList<>();
 	}
 
 	@Test
@@ -68,7 +65,7 @@ class PessoaServiceImplTest {
 
 	@Test
 	void testAtualizar() {
-		Mockito.when(pessoaService.verificarPessoa(pessoa)).thenReturn(true);
+		Mockito.when(pessoaRepository.existsByCpf(pessoa.getCpf())).thenReturn(true);
 		Mockito.when(pessoaRepository.save(pessoa)).thenReturn(pessoa);
 		assertEquals(pessoa, pessoaService.atualizar(pessoa));
 
@@ -77,7 +74,7 @@ class PessoaServiceImplTest {
 	@Test
 	void testAtualizarException() {
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			Mockito.when(pessoaService.verificarPessoa(pessoa)).thenReturn(false);
+			Mockito.when(pessoaRepository.existsByCpf(pessoa.getCpf())).thenReturn(false);
 			pessoaService.atualizar(pessoa);
 		});
 
@@ -89,48 +86,57 @@ class PessoaServiceImplTest {
 
 	@Test
 	void testListarTodasPessoas() {
+		lista = new ArrayList<>();
 		Mockito.when(pessoaRepository.findAll()).thenReturn(lista);
 		lista.add(pessoa);
 		lista.add(pessoa);
 		lista.add(pessoa);
-		assertNotNull(pessoaService.listarTodasPessoas());
+		assertEquals(lista, pessoaService.listarTodasPessoas());
 	}
 
 	@Test
 	void testListarTodasPessoasQuandoNaoOuverNinguemNoSistema() {
+		lista = new ArrayList<>();
 		Mockito.when(pessoaRepository.findAll()).thenReturn(lista);
-		assertNotNull(pessoaService.listarTodasPessoas());
+		assertEquals(lista, pessoaService.listarTodasPessoas());
 	}
 
 	@Test
 	void testListarPorId() {
-		Optional<Pessoa> retorno = Optional.of(pessoa);
-		Mockito.when(pessoaRepository.findById(pessoa.getId())).thenReturn(retorno);
-		assertNotNull(pessoaService.listarPorId(pessoa.getId()));
+		resultado = Optional.of(pessoa);
+		Mockito.when(pessoaRepository.findById(pessoa.getId())).thenReturn(resultado);
+		assertEquals(resultado, pessoaService.listarPorId(pessoa.getId()));
 	}
 
 	@Test
 	void testListarPorIdException() {
-		assertThrows(NoSuchElementException.class, () -> {
-			Mockito.when(pessoaRepository.findById(pessoa.getId()).get()).thenReturn(null);
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			Mockito.when(pessoaRepository.findById(pessoa.getId())).thenReturn(Optional.empty());
 			pessoaService.listarPorId(pessoa.getId());
 		});
+
+		String mensagemEsperada = "Pessoa não encontrada";
+		String mensagemAtual = exception.getMessage();
+
+		assertTrue(mensagemAtual.contains(mensagemEsperada));
 	}
 
 	@Test
 	void testListarPorNome() {
+		lista = new ArrayList<>();
 		lista.add(pessoa);
 		lista.add(pessoa);
 		lista.add(pessoa);
 		lista.add(pessoa);
-		Mockito.when(pessoaService.listarTodasPessoas()).thenReturn(lista);
+		Mockito.when(pessoaRepository.findAll()).thenReturn(lista);
 		assertEquals(lista, pessoaService.listarPorNome(pessoa.getNome()));
 	}
 
 	@Test
 	void testListarPorNomeException() {
+		lista = new ArrayList<>();
 		Exception exception = assertThrows(NullPointerException.class, () -> {
-			Mockito.when(pessoaService.listarTodasPessoas()).thenReturn(lista);
+			Mockito.when(pessoaRepository.findAll()).thenReturn(lista);
 			assertEquals(lista, pessoaService.listarPorNome(pessoa.getNome()));
 		});
 

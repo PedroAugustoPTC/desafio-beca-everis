@@ -1,6 +1,7 @@
 package br.com.desafiobeca.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityExistsException;
 
@@ -35,17 +36,21 @@ public class VagaServiceImpl implements VagaService {
 	}
 
 	public Vaga atualizar(Vaga vaga) {
-		if (listarPorId(vaga.getId()) != null && !(listarPorId(vaga.getId()).isOcupada())
-				&& vagaRepository.findByNumeroVaga(vaga.getNumeroVaga()) == null) {
+		if (listarPorId(vaga.getId()).isPresent() && !((listarPorId(vaga.getId()).get()).isOcupada())
+				&& !(verificaVaga(vaga.getNumeroVaga()))) {
 			return vagaRepository.save(vaga);
 		} else {
 			throw new AtualizarVagaException("Verifique se essa vaga existe ou se não está ocupada ");
 		}
 	}
 
-	public Vaga listarPorId(Long id) {
-		Vaga vaga = vagaRepository.findById(id).get();
-		return vaga;
+	public Optional<Vaga> listarPorId(Long id) {
+		Optional<Vaga> vaga = vagaRepository.findById(id);
+		if(vaga.isPresent()) {
+			return vaga;
+		}else {
+			throw new NullPointerException("Vaga não encontrada");
+		}
 	}
 
 	public Vaga listarPorNumeroVaga(Integer numeroVaga) {
@@ -66,7 +71,7 @@ public class VagaServiceImpl implements VagaService {
 	}
 
 	public Vaga atualizaEstadoVaga(Long id) {
-		Vaga vaga = listarPorId(id);
+		Vaga vaga = listarPorId(id).get();
 
 		if (vaga.isOcupada()) {
 			vaga.setOcupada(false);

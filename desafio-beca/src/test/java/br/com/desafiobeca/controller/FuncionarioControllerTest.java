@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import br.com.desafiobeca.service.impl.FuncionarioServiceImpl;
 
 class FuncionarioControllerTest {
 	private Funcionario funcionario;
+	private Optional<Funcionario> resultado;
 
 	@InjectMocks
 	private FuncionarioController funcionarioController;
@@ -35,6 +37,8 @@ class FuncionarioControllerTest {
 		funcionario.setEmail("sddsadas@dasdas");
 		funcionario.setTelefone("(034)999506807");
 		funcionario.setSalario(3.0);
+
+		resultado = Optional.of(funcionario);
 	}
 
 	@Test
@@ -59,7 +63,7 @@ class FuncionarioControllerTest {
 
 	@Test
 	void testListarFuncionarioPorId() {
-		Mockito.when(funcionarioService.listarPorId(funcionario.getId())).thenReturn(funcionario);
+		Mockito.when(funcionarioService.listarPorId(funcionario.getId())).thenReturn(resultado);
 		assertNotNull(funcionarioController.listarFuncionarioPorId(funcionario.getId()));
 	}
 

@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 class VeiculoTest {
 
 	private Veiculo veiculo;
+	private Veiculo veiculo2;
 	private Pessoa pessoa;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		veiculo = new Veiculo();
 		pessoa = new Pessoa();
 		pessoa.setId(1L);
 		pessoa.setNome("Pedro");
@@ -20,6 +20,7 @@ class VeiculoTest {
 		pessoa.setEmail("sddsadas@dasdas");
 		pessoa.setTelefone("(034)999506807");
 
+		veiculo = new Veiculo();
 		veiculo.setId(1L);
 		veiculo.setPlaca("WER-3456");
 		veiculo.setProprietario(pessoa);
@@ -42,8 +43,20 @@ class VeiculoTest {
 
 	@Test
 	void testEqualsObject() {
-		boolean teste = veiculo.equals(veiculo);
-		assertEquals(true, teste);
+		veiculo2 = new Veiculo();
+		veiculo2.setId(1L);
+		veiculo2.setPlaca("WER-3456");
+		veiculo2.setProprietario(pessoa);
+		assertEquals(true, veiculo.equals(veiculo2));
+	}
+
+	@Test
+	void testHashCode() {
+		veiculo2 = new Veiculo();
+		veiculo2.setId(1L);
+		veiculo2.setPlaca("WER-3456");
+		veiculo2.setProprietario(pessoa);
+		assertEquals(veiculo2.hashCode(), veiculo.hashCode());
 	}
 
 }

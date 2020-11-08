@@ -1,6 +1,7 @@
 package br.com.desafiobeca.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import br.com.desafiobeca.model.Vaga;
 
@@ -11,7 +12,7 @@ public interface VagaService {
 
 	public Vaga atualizar(Vaga vaga);
 
-	public Vaga listarPorId(Long id);
+	public Optional<Vaga> listarPorId(Long id);
 
 	public Vaga listarPorNumeroVaga(Integer numeroVaga);
 

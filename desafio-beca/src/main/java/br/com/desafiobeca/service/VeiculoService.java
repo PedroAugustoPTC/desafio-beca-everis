@@ -1,6 +1,7 @@
 package br.com.desafiobeca.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import br.com.desafiobeca.model.Veiculo;
 
@@ -9,7 +10,7 @@ public interface VeiculoService {
 
 	public List<Veiculo> listarTodosVeiculos();
 
-	public Veiculo listarPorId(Long id);
+	public Optional<Veiculo> listarPorId(Long id);
 
 	public Veiculo listarVeiculoPorPlaca(String placa);
 

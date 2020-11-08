@@ -40,7 +40,7 @@ public class FuncionarioController {
 
 	@RequestMapping(value = "listar/id={id}", method = RequestMethod.GET)
 	public ResponseEntity<Funcionario> listarFuncionarioPorId(@RequestBody @PathVariable Long id) {
-		return ResponseEntity.status(HttpStatus.OK).body(funcionarioService.listarPorId(id));
+		return ResponseEntity.status(HttpStatus.OK).body(funcionarioService.listarPorId(id).get());
 	}
 
 	@RequestMapping(value = "listar/nome={nome}", method = RequestMethod.GET)

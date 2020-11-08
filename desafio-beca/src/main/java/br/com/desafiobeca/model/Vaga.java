@@ -38,6 +38,10 @@ public class Vaga {
 		return id;
 	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -46,10 +50,6 @@ public class Vaga {
 		result = prime * result + ((numeroVaga == null) ? 0 : numeroVaga.hashCode());
 		result = prime * result + (ocupada ? 1231 : 1237);
 		return result;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	@Override

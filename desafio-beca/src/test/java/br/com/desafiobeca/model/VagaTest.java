@@ -8,13 +8,14 @@ import org.junit.jupiter.api.Test;
 class VagaTest {
 
 	private Vaga vaga;
+	private Vaga vaga2;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		vaga = new Vaga();
 		vaga.setId(1L);
 		vaga.setNumeroVaga(1);
-		vaga.setOcupada(true);
+		vaga.setOcupada(false);
 	}
 
 	@Test
@@ -24,12 +25,30 @@ class VagaTest {
 
 	@Test
 	void testSetOcupada() {
-		assertEquals(true, vaga.isOcupada());
+		assertEquals(false, vaga.isOcupada());
 	}
 
 	@Test
 	void testSetId() {
 		assertEquals(1L, vaga.getId());
+	}
+
+	@Test
+	void testEqualsObject() {
+		vaga2 = new Vaga();
+		vaga2.setId(1L);
+		vaga2.setNumeroVaga(1);
+		vaga2.setOcupada(false);
+		assertEquals(true, vaga.equals(vaga2));
+	}
+
+	@Test
+	void testHashCode() {
+		vaga2 = new Vaga();
+		vaga2.setId(1L);
+		vaga2.setNumeroVaga(1);
+		vaga2.setOcupada(false);
+		assertEquals(vaga2.hashCode(), vaga.hashCode());
 	}
 
 }

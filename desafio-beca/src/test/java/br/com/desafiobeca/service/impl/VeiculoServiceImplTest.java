@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityExistsException;
 
@@ -24,7 +25,9 @@ class VeiculoServiceImplTest {
 
 	Veiculo veiculo;
 	Pessoa proprietario;
+	Pessoa pessoaErrada;
 	List<Veiculo> lista;
+	Optional<Veiculo> resultado;
 
 	@InjectMocks
 	private VeiculoServiceImpl veiculoService;
@@ -49,8 +52,6 @@ class VeiculoServiceImplTest {
 		veiculo.setId(1L);
 		veiculo.setPlaca("WER-3456");
 		veiculo.setProprietario(proprietario);
-
-		lista = new ArrayList<>();
 
 	}
 
@@ -80,17 +81,30 @@ class VeiculoServiceImplTest {
 
 	@Test
 	void testSalvarNullPointerException() {
-		assertThrows(NullPointerException.class, () -> {
-			Mockito.when(pessoaService.listarPorCpf(proprietario.getCpf())).thenReturn(null);
+		pessoaErrada = new Pessoa();
+		proprietario.setId(2L);
+		proprietario.setNome("Carlos");
+		proprietario.setCpf("143.333.476-48");
+		proprietario.setEmail("sddsadas@dasdas");
+		proprietario.setTelefone("(034)999506807");
+
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			Mockito.when(pessoaService.listarPorCpf(proprietario.getCpf())).thenReturn(pessoaErrada);
 			Mockito.when(veiculoRepository.existsByPlaca(veiculo.getPlaca())).thenReturn(false);
 			Mockito.when(veiculoRepository.save(veiculo)).thenReturn(veiculo);
 			assertEquals(veiculo, veiculoService.salvar(veiculo));
 		});
 
+		String mensagemEsperada = "Proprietário não cadastrado";
+		String mensagemAtual = exception.getMessage();
+
+		assertTrue(mensagemAtual.contains(mensagemEsperada));
+
 	}
 
 	@Test
 	void testListarTodosVeiculos() {
+		lista = new ArrayList<>();
 		lista.add(veiculo);
 		lista.add(veiculo);
 		lista.add(veiculo);
@@ -100,8 +114,9 @@ class VeiculoServiceImplTest {
 
 	@Test
 	void testListarPorId() {
-		Mockito.when(veiculoRepository.findById(veiculo.getId()).get()).thenReturn(veiculo);
-		assertEquals(veiculo, veiculoService.listarPorId(veiculo.getId()));
+		resultado = Optional.of(veiculo);
+		Mockito.when(veiculoRepository.findById(veiculo.getId())).thenReturn(resultado);
+		assertEquals(veiculo, veiculoService.listarPorId(veiculo.getId()).get());
 	}
 
 	@Test
@@ -125,7 +140,9 @@ class VeiculoServiceImplTest {
 
 	@Test
 	void testAtualizar() {
-		Mockito.when(veiculoService.salvar(veiculo)).thenReturn(veiculo);
+		Mockito.when(pessoaService.listarPorCpf(veiculo.getProprietario().getCpf())).thenReturn(proprietario);
+		Mockito.when(veiculoRepository.existsByPlaca(veiculo.getPlaca())).thenReturn(false);
+		Mockito.when(veiculoRepository.save(veiculo)).thenReturn(veiculo);
 		assertEquals(veiculo, veiculoService.atualizar(veiculo));
 	}
 

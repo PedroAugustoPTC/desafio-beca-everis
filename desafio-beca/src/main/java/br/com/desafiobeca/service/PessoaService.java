@@ -1,6 +1,7 @@
 package br.com.desafiobeca.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import br.com.desafiobeca.model.Pessoa;
 
@@ -11,7 +12,7 @@ public interface PessoaService {
 
 	public List<Pessoa> listarTodasPessoas();
 
-	public Pessoa listarPorId(Long id);
+	public Optional<Pessoa> listarPorId(Long id);
 
 	public List<Pessoa> listarPorNome(String nome);
 

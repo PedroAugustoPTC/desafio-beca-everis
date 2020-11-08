@@ -2,6 +2,7 @@ package br.com.desafiobeca.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityExistsException;
 
@@ -39,9 +40,13 @@ public class PessoaServiceImpl implements PessoaService {
 		return pessoaRepository.findAll();
 	}
 
-	public Pessoa listarPorId(Long id) {
-		Pessoa pessoa = pessoaRepository.findById(id).get();
-		return pessoa;
+	public Optional<Pessoa> listarPorId(Long id) {
+		Optional<Pessoa> pessoa = pessoaRepository.findById(id);
+		if (pessoa.isPresent()) {
+			return pessoa;
+		} else {
+			throw new NullPointerException("Pessoa não encontrada");
+		}
 	}
 
 	public List<Pessoa> listarPorNome(String nome) {

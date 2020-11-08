@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ class VagaControllerTest {
 
 	Vaga vaga;
 	List<Vaga> lista;
+	private Optional<Vaga> resultado;
 
 	@InjectMocks
 	private VagaController vagaController;
@@ -36,6 +38,8 @@ class VagaControllerTest {
 
 		lista = new ArrayList<>();
 		lista.add(vaga);
+
+		resultado = Optional.of(vaga);
 	}
 
 	@Test
@@ -58,7 +62,7 @@ class VagaControllerTest {
 
 	@Test
 	void testListarVagaPorId() {
-		Mockito.when(vagaService.listarPorId(vaga.getId())).thenReturn(vaga);
+		Mockito.when(vagaService.listarPorId(vaga.getId())).thenReturn(resultado);
 		assertNotNull(vagaController.listarVagaPorId(vaga.getId()));
 	}
 

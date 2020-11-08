@@ -2,6 +2,7 @@ package br.com.desafiobeca.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,9 +36,11 @@ public class TicketServiceImpl implements TicketService {
 				throw new TicketInvalidoException("Este veículo já está com um ticket em aberto");
 		});
 
-		if (veiculo != null && vaga != null && !(vaga.isOcupada())) {
+		if (veiculo.getPlaca().equals(placa) && vaga.getNumeroVaga() == numeroVaga && !(vaga.isOcupada())) {
 			vaga = vagaServiceImpl.atualizaEstadoVaga(vaga.getId());
 			Ticket ticket = new Ticket(veiculo, vaga, LocalDateTime.now());
+			ticket.setHorarioSaida(null);
+			ticket.setValoTotal(0.0);
 			return ticketRepository.save(ticket);
 		} else {
 			throw new NullPointerException(
@@ -50,13 +53,8 @@ public class TicketServiceImpl implements TicketService {
 		return ticketRepository.findAll();
 	}
 
-	public Ticket listarPorId(Long id) {
-		Ticket ticket = ticketRepository.findById(id).get();
-		if (ticket != null) {
-			return ticket;
-		} else {
-			throw new NullPointerException("Ticket não encontrado");
-		}
+	public Optional<Ticket> listarPorId(Long id) {
+		return ticketRepository.findById(id);
 	}
 
 	public List<Ticket> listarPorPlaca(String placa) {

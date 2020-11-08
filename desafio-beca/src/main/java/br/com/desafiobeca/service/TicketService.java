@@ -2,6 +2,7 @@ package br.com.desafiobeca.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import br.com.desafiobeca.model.Ticket;
 
@@ -10,7 +11,7 @@ public interface TicketService {
 
 	public List<Ticket> listarTodosTickets();
 
-	public Ticket listarPorId(Long id);
+	public Optional<Ticket> listarPorId(Long id);
 
 	public List<Ticket> listarPorPlaca(String placa);
 

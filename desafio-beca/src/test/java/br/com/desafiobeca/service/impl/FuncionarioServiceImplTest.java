@@ -1,13 +1,11 @@
 package br.com.desafiobeca.service.impl;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.persistence.EntityExistsException;
@@ -26,6 +24,7 @@ class FuncionarioServiceImplTest {
 
 	private Funcionario funcionario;
 	List<Funcionario> lista;
+	Optional<Funcionario> resultado;
 
 	@InjectMocks
 	private FuncionarioServiceImpl funcionarioService;
@@ -47,8 +46,6 @@ class FuncionarioServiceImplTest {
 		funcionario.setEmail("sddsadas@dasdas");
 		funcionario.setTelefone("(034)999506807");
 		funcionario.setSalario(2.0);
-
-		lista = new ArrayList<>();
 	}
 
 	@Test
@@ -94,32 +91,41 @@ class FuncionarioServiceImplTest {
 
 	@Test
 	void testListarTodosFuncionarios() {
+		lista = new ArrayList<>();
+		lista.add(funcionario);
+		lista.add(funcionario);
+		lista.add(funcionario);
+
 		Mockito.when(funcionarioRepository.findAll()).thenReturn(lista);
-		lista.add(funcionario);
-		lista.add(funcionario);
-		lista.add(funcionario);
-		assertNotNull(funcionarioService.listarTodosFuncionarios());
+		assertEquals(lista, funcionarioService.listarTodosFuncionarios());
 	}
 
 	@Test
 	void testListarTodosFuncionariosQuandoNaoOuverNinguemNoSistema() {
+		lista = new ArrayList<>();
 		Mockito.when(funcionarioRepository.findAll()).thenReturn(lista);
-		assertNotNull(funcionarioService.listarTodosFuncionarios());
+		assertEquals(lista, funcionarioService.listarTodosFuncionarios());
 	}
 
 	@Test
 	void testListarPorId() {
-		Optional<Funcionario> retorno = Optional.of(funcionario);
-		Mockito.when(funcionarioRepository.findById(funcionario.getId())).thenReturn(retorno);
-		assertNotNull(funcionarioService.listarPorId(funcionario.getId()));
+		resultado = Optional.of(funcionario);
+
+		Mockito.when(funcionarioRepository.findById(funcionario.getId())).thenReturn(resultado);
+		assertEquals(resultado, funcionarioService.listarPorId(funcionario.getId()));
 	}
 
 	@Test
 	void testListarPorIdException() {
-		assertThrows(NoSuchElementException.class, () -> {
-			Mockito.when(funcionarioRepository.findById(funcionario.getId()).get()).thenReturn(null);
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			Mockito.when(funcionarioRepository.findById(funcionario.getId())).thenReturn(Optional.empty());
 			funcionarioService.listarPorId(funcionario.getId());
 		});
+
+		String mensagemEsperada = "Funcionario não encontrado";
+		String mensagemAtual = exception.getMessage();
+
+		assertTrue(mensagemAtual.contains(mensagemEsperada));
 	}
 
 	@Test
@@ -130,26 +136,33 @@ class FuncionarioServiceImplTest {
 
 	@Test
 	void testListarPorCpfException() {
-		assertThrows(NullPointerException.class, () -> {
+		Exception exception = assertThrows(NullPointerException.class, () -> {
 			Mockito.when(funcionarioRepository.findByCpf(funcionario.getCpf())).thenReturn(null);
 			funcionarioService.listarPorCpf(funcionario.getCpf());
 		});
+
+		String mensagemEsperada = "Funcionário não encontrado";
+		String mensagemAtual = exception.getMessage();
+		assertTrue(mensagemAtual.contains(mensagemEsperada));
 	}
 
 	@Test
-	void testListarPorNome() {
+	void testarPorNome() {
+		lista = new ArrayList<>();
 		lista.add(funcionario);
 		lista.add(funcionario);
 		lista.add(funcionario);
 		lista.add(funcionario);
-		Mockito.when(funcionarioService.listarTodosFuncionarios()).thenReturn(lista);
+
+		Mockito.when(funcionarioRepository.findAll()).thenReturn(lista);
 		assertEquals(lista, funcionarioService.listarPorNome(funcionario.getNome()));
 	}
 
 	@Test
 	void testListarPorNomeException() {
 		Exception exception = assertThrows(NullPointerException.class, () -> {
-			Mockito.when(funcionarioService.listarTodosFuncionarios()).thenReturn(lista);
+			lista = new ArrayList<>();
+			Mockito.when(funcionarioRepository.findAll()).thenReturn(lista);
 			assertEquals(lista, funcionarioService.listarPorNome(funcionario.getNome()));
 		});
 

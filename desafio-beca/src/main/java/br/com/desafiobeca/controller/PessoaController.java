@@ -40,7 +40,7 @@ public class PessoaController {
 
 	@RequestMapping(value = "listar/id={id}", method = RequestMethod.GET)
 	public ResponseEntity<Pessoa> listarPessoaPorId(@RequestBody @PathVariable Long id) {
-		return ResponseEntity.status(HttpStatus.OK).body(pessoaService.listarPorId(id));
+		return ResponseEntity.status(HttpStatus.OK).body(pessoaService.listarPorId(id).get());
 	}
 
 	@RequestMapping(value = "listar/nome={nome}", method = RequestMethod.GET)
