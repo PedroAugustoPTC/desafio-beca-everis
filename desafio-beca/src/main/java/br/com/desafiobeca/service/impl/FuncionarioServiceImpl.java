@@ -22,6 +22,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 	@Autowired
 	PessoaServiceImpl pessoaService;
 
+	@Override
 	public Funcionario salvar(Funcionario funcionario) {
 		if (pessoaService.verificarPessoa(funcionario)) {
 			throw new EntityExistsException("Uma pessoa com este CPF já existe");
@@ -31,6 +32,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 		}
 	}
 
+	@Override
 	public Funcionario atualizar(Funcionario funcionario) {
 		if (pessoaService.verificarPessoa(funcionario)) {
 			return funcionarioRepository.save(funcionario);
@@ -39,10 +41,12 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 		}
 	}
 
+	@Override
 	public List<Funcionario> listarTodosFuncionarios() {
 		return funcionarioRepository.findAll();
 	}
 
+	@Override
 	public Optional<Funcionario> listarPorId(Long id) {
 		Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
 		if(funcionario.isPresent()) {
@@ -51,7 +55,8 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 			throw new NullPointerException("Funcionario não encontrado");
 		}
 	}
-
+	
+	@Override
 	public Funcionario listarPorCpf(String cpf) {
 		Funcionario funcionario = funcionarioRepository.findByCpf(cpf);
 		if (funcionario != null) {
@@ -60,7 +65,8 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 			throw new NullPointerException("Funcionário não encontrado");
 		}
 	}
-
+	
+	@Override
 	public List<Funcionario> listarPorNome(String nome) {
 		List<Funcionario> funcionario = new ArrayList<Funcionario>();
 		listarTodosFuncionarios().forEach(item -> {

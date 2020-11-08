@@ -23,8 +23,8 @@ import br.com.desafiobeca.repository.FuncionarioRepository;
 class FuncionarioServiceImplTest {
 
 	private Funcionario funcionario;
-	List<Funcionario> lista;
-	Optional<Funcionario> resultado;
+	private List<Funcionario> lista;
+	private Optional<Funcionario> resultado;
 
 	@InjectMocks
 	private FuncionarioServiceImpl funcionarioService;

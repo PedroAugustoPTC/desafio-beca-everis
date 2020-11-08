@@ -22,6 +22,7 @@ public class VeiculoServiceImpl implements VeiculoService {
 	@Autowired
 	PessoaServiceImpl pessoaService;
 
+	@Override
 	public Veiculo salvar(Veiculo veiculo) {
 		Pessoa pessoa = pessoaService.listarPorCpf(veiculo.getProprietario().getCpf());
 		if (veiculoRepository.existsByPlaca(veiculo.getPlaca())) {
@@ -34,14 +35,17 @@ public class VeiculoServiceImpl implements VeiculoService {
 
 	}
 
+	@Override
 	public List<Veiculo> listarTodosVeiculos() {
 		return veiculoRepository.findAll();
 	}
 
+	@Override
 	public Optional<Veiculo> listarPorId(Long id) {
 		return veiculoRepository.findById(id);
 	}
 
+	@Override
 	public Veiculo listarVeiculoPorPlaca(String placa) {
 		Veiculo veiculo = veiculoRepository.findByPlaca(placa);
 		if (veiculo != null) {
@@ -51,6 +55,7 @@ public class VeiculoServiceImpl implements VeiculoService {
 		}
 	}
 
+	@Override
 	public Veiculo atualizar(Veiculo veiculo) {
 		return salvar(veiculo);
 	}

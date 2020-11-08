@@ -19,4 +19,6 @@ public interface VagaService {
 	public boolean verificaVaga(Integer numeroVaga);
 
 	public List<Vaga> listarPorOcupacao(boolean ocupado);
+
+	public Vaga atualizaEstadoVaga(Long id);
 }

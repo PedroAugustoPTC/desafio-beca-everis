@@ -18,7 +18,8 @@ public class PessoaServiceImpl implements PessoaService {
 
 	@Autowired
 	PessoaRepository pessoaRepository;
-
+	
+	@Override
 	public Pessoa salvar(Pessoa pessoa) {
 		if (pessoaRepository.existsByCpf(pessoa.getCpf())) {
 			throw new EntityExistsException("Uma pessoa com este CPF já existe");
@@ -27,7 +28,8 @@ public class PessoaServiceImpl implements PessoaService {
 			return pessoa;
 		}
 	}
-
+	
+	@Override
 	public Pessoa atualizar(Pessoa pessoa) {
 		if (verificarPessoa(pessoa)) {
 			return pessoaRepository.save(pessoa);
@@ -35,11 +37,13 @@ public class PessoaServiceImpl implements PessoaService {
 			throw new IllegalArgumentException("Essa pessoa não existe");
 		}
 	}
-
+	
+	@Override
 	public List<Pessoa> listarTodasPessoas() {
 		return pessoaRepository.findAll();
 	}
-
+	
+	@Override
 	public Optional<Pessoa> listarPorId(Long id) {
 		Optional<Pessoa> pessoa = pessoaRepository.findById(id);
 		if (pessoa.isPresent()) {
@@ -48,7 +52,8 @@ public class PessoaServiceImpl implements PessoaService {
 			throw new NullPointerException("Pessoa não encontrada");
 		}
 	}
-
+	
+	@Override
 	public List<Pessoa> listarPorNome(String nome) {
 		List<Pessoa> pessoas = new ArrayList<Pessoa>();
 		listarTodasPessoas().forEach(item -> {
@@ -61,7 +66,8 @@ public class PessoaServiceImpl implements PessoaService {
 		}
 		return pessoas;
 	}
-
+	
+	@Override
 	public Pessoa listarPorCpf(String cpf) {
 		Pessoa pessoa = pessoaRepository.findByCpf(cpf);
 		if (pessoa != null) {
@@ -70,7 +76,8 @@ public class PessoaServiceImpl implements PessoaService {
 			throw new NullPointerException("Pessoa não encontrada");
 		}
 	}
-
+	
+	@Override
 	public boolean verificarPessoa(Pessoa pessoa) {
 
 		if (pessoaRepository.existsByCpf(pessoa.getCpf())) {

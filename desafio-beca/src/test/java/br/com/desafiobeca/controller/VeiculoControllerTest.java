@@ -19,7 +19,7 @@ import br.com.desafiobeca.service.impl.VeiculoServiceImpl;
 class VeiculoControllerTest {
 
 	private Veiculo veiculo;
-	Optional<Veiculo> resultado;
+	private Optional<Veiculo> resultado;
 
 	@InjectMocks
 	private VeiculoController veiculoController;

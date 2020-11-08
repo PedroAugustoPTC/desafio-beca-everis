@@ -19,6 +19,7 @@ public class VagaServiceImpl implements VagaService {
 	@Autowired
 	VagaRepository vagaRepository;
 
+	@Override
 	public Vaga salvar(Integer numeroVaga) {
 		if (verificaVaga(numeroVaga)) {
 			throw new EntityExistsException("Esse número de vaga já existe");
@@ -31,10 +32,12 @@ public class VagaServiceImpl implements VagaService {
 		}
 	}
 
+	@Override
 	public List<Vaga> listarTodasVagas() {
 		return vagaRepository.findAll();
 	}
 
+	@Override
 	public Vaga atualizar(Vaga vaga) {
 		if (listarPorId(vaga.getId()).isPresent() && !((listarPorId(vaga.getId()).get()).isOcupada())
 				&& !(verificaVaga(vaga.getNumeroVaga()))) {
@@ -44,15 +47,17 @@ public class VagaServiceImpl implements VagaService {
 		}
 	}
 
+	@Override
 	public Optional<Vaga> listarPorId(Long id) {
 		Optional<Vaga> vaga = vagaRepository.findById(id);
-		if(vaga.isPresent()) {
+		if (vaga.isPresent()) {
 			return vaga;
-		}else {
+		} else {
 			throw new NullPointerException("Vaga não encontrada");
 		}
 	}
 
+	@Override
 	public Vaga listarPorNumeroVaga(Integer numeroVaga) {
 		Vaga vaga = vagaRepository.findByNumeroVaga(numeroVaga);
 		if (vaga != null) {
@@ -62,14 +67,17 @@ public class VagaServiceImpl implements VagaService {
 		}
 	}
 
+	@Override
 	public List<Vaga> listarPorOcupacao(boolean ocupado) {
 		return vagaRepository.findByOcupada(ocupado);
 	}
 
+	@Override
 	public boolean verificaVaga(Integer numeroVaga) {
 		return vagaRepository.existsByNumeroVaga(numeroVaga);
 	}
 
+	@Override
 	public Vaga atualizaEstadoVaga(Long id) {
 		Vaga vaga = listarPorId(id).get();
 

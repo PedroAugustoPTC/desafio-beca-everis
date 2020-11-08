@@ -22,9 +22,9 @@ import br.com.desafiobeca.repository.VagaRepository;
 
 class VagaServiceImplTest {
 
-	Vaga vaga;
-	List<Vaga> lista;
-	Optional<Vaga> resultado;
+	private Vaga vaga;
+	private List<Vaga> lista;
+	private Optional<Vaga> resultado;
 
 	@InjectMocks
 	private VagaServiceImpl vagaService;

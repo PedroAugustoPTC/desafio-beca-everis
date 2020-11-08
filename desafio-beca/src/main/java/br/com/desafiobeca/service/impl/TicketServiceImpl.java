@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityExistsException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,31 +28,30 @@ public class TicketServiceImpl implements TicketService {
 	@Autowired
 	VagaServiceImpl vagaServiceImpl;
 
+	@Override
 	public Ticket salvar(String placa, Integer numeroVaga) {
 		Veiculo veiculo = veiculoServiceImpl.listarVeiculoPorPlaca(placa);
 		Vaga vaga = vagaServiceImpl.listarPorNumeroVaga(numeroVaga);
 
-		List<Ticket> testeBanco = ticketRepository.findByVeiculo(veiculo);
-		testeBanco.forEach(item -> {
-			if (item.getVaga().isOcupada()) {
+		List<Ticket> listaTicket = ticketRepository.findByVeiculo(veiculo);
+		listaTicket.forEach(item -> {
+			if (item.getHorarioSaida() == null) {
 				throw new TicketInvalidoException("Este veículo já está com um ticket em aberto");
 			}
 		});
 
-		if (veiculo.getPlaca().equals(placa) && vaga.getNumeroVaga() == numeroVaga && !(vaga.isOcupada())) {
+		if (vaga.isOcupada()) {
+			throw new EntityExistsException("Verifique se a vaga selecionada já não está ocupada");
+
+		} else {
 			vaga = vagaServiceImpl.atualizaEstadoVaga(vaga.getId());
 			Ticket ticket = new Ticket(veiculo, vaga, LocalDateTime.now());
-			ticket.setHorarioSaida(null);
-			ticket.setValoTotal(0.0);
 			Ticket retorno = ticketRepository.save(ticket);
 			return retorno;
-		} else {
-			throw new NullPointerException(
-					"Verifique se a placa ou a vaga estão corretos. Lembre-se de que o mesmo veículo "
-							+ "não pode ocupar duas vagas ao mesmo e verifique se a vaga selecionada já não está ocupada");
 		}
 	}
 
+	@Override
 	public List<Ticket> listarTodosTickets() {
 		return ticketRepository.findAll();
 	}
@@ -64,6 +65,7 @@ public class TicketServiceImpl implements TicketService {
 		}
 	}
 
+	@Override
 	public List<Ticket> listarPorPlaca(String placa) {
 		List<Ticket> ticket = ticketRepository.findByVeiculo(veiculoServiceImpl.listarVeiculoPorPlaca(placa));
 		if (ticket != null) {
@@ -73,6 +75,7 @@ public class TicketServiceImpl implements TicketService {
 		}
 	}
 
+	@Override
 	public List<Ticket> listarPorVaga(Integer vaga) {
 		List<Ticket> ticket = ticketRepository.findByVaga(vagaServiceImpl.listarPorNumeroVaga(vaga));
 		if (ticket != null) {
@@ -82,6 +85,7 @@ public class TicketServiceImpl implements TicketService {
 		}
 	}
 
+	@Override
 	public String fecharTicket(Long id) {
 		Optional<Ticket> optionalTicket = ticketRepository.findById(id);
 		Ticket ticket = optionalTicket.get();
@@ -95,6 +99,7 @@ public class TicketServiceImpl implements TicketService {
 		}
 	}
 
+	@Override
 	public Double calculaValorFinal(LocalDateTime horarioEntrada, LocalDateTime horarioSaida) {
 		Integer entradaMinutos;
 		Integer saidaMinutos;

@@ -26,9 +26,9 @@ class TicketControllerTest {
 	private TicketDtoSalvar ticketSalvar;
 	private Veiculo veiculo;
 	private Vaga vaga;
-	LocalDateTime entrada;
-	LocalDateTime saida;
-	List<Ticket> lista;
+	private LocalDateTime entrada;
+	private LocalDateTime saida;
+	private List<Ticket> lista;
 	private Optional<Ticket> resultado;
 
 	@InjectMocks

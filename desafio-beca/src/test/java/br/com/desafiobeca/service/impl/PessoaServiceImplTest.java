@@ -29,8 +29,8 @@ class PessoaServiceImplTest {
 	private PessoaRepository pessoaRepository;
 
 	private Pessoa pessoa;
-	List<Pessoa> lista;
-	Optional<Pessoa> resultado;
+	private List<Pessoa> lista;
+	private Optional<Pessoa> resultado;
 
 	@BeforeEach
 	void setUp() throws Exception {

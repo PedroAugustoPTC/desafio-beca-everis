@@ -23,11 +23,11 @@ import br.com.desafiobeca.repository.VeiculoRepository;
 
 class VeiculoServiceImplTest {
 
-	Veiculo veiculo;
-	Pessoa proprietario;
-	Pessoa pessoaErrada;
-	List<Veiculo> lista;
-	Optional<Veiculo> resultado;
+	private Veiculo veiculo;
+	private Pessoa proprietario;
+	private Pessoa pessoaErrada;
+	private List<Veiculo> lista;
+	private Optional<Veiculo> resultado;
 
 	@InjectMocks
 	private VeiculoServiceImpl veiculoService;

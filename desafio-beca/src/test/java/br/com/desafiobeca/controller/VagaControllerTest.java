@@ -18,8 +18,8 @@ import br.com.desafiobeca.service.impl.VagaServiceImpl;
 
 class VagaControllerTest {
 
-	Vaga vaga;
-	List<Vaga> lista;
+	private Vaga vaga;
+	private List<Vaga> lista;
 	private Optional<Vaga> resultado;
 
 	@InjectMocks
