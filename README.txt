@@ -1,3 +1,3 @@
 A SENHA PARA O ACESSO ÀS ROTAS É:
-LOGIN: pedro
+LOGIN: pedro2
 SENHA: 123
