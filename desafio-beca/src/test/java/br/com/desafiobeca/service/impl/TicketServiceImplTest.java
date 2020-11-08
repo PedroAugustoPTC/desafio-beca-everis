@@ -1,11 +1,15 @@
 package br.com.desafiobeca.service.impl;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import br.com.desafiobeca.exceptions.TicketInvalidoException;
 import br.com.desafiobeca.model.Pessoa;
 import br.com.desafiobeca.model.Ticket;
 import br.com.desafiobeca.model.Vaga;
@@ -31,6 +36,7 @@ class TicketServiceImplTest {
 	LocalDateTime saida;
 	List<Ticket> lista;
 	Pessoa pessoa;
+	Optional<Ticket> resultado;
 
 	@InjectMocks
 	private TicketServiceImpl ticketService;
@@ -70,7 +76,7 @@ class TicketServiceImplTest {
 
 		ticket = new Ticket(veiculo, vaga, entrada);
 		ticket.setId(1L);
-		ticket.setHorarioSaida(null);
+		ticket.setHorarioSaida(LocalDateTime.now());
 		ticket.setValoTotal(0.0);
 	}
 
@@ -97,44 +103,155 @@ class TicketServiceImplTest {
 
 		Mockito.when(ticketRepository.save(ticket)).thenReturn(ticket);
 
-		System.out.println(veiculoService.listarVeiculoPorPlaca(ticket.getVeiculo().getPlaca()));
-		System.out.println(vagaService.listarPorNumeroVaga(ticket.getVaga().getNumeroVaga()));
-		lista.forEach(item -> {
-			System.out.println(item);
-		});
-
-		assertEquals(ticket, ticketService.salvar((ticket.getVeiculo().getPlaca()), (ticket.getVaga().getNumeroVaga())));
+		assertEquals(ticket,
+				ticketService.salvar((ticket.getVeiculo().getPlaca()), (ticket.getVaga().getNumeroVaga())));
 
 	}
 
 	@Test
 	void testListarTodosTickets() {
-		fail("Not yet implemented");
+		lista = new ArrayList<>();
+		lista.add(ticket);
+		lista.add(ticket);
+		lista.add(ticket);
+		Mockito.when(ticketRepository.findAll()).thenReturn(lista);
+		assertEquals(lista, ticketService.listarTodosTickets());
 	}
 
 	@Test
 	void testListarPorId() {
-		fail("Not yet implemented");
+		resultado = Optional.of(ticket);
+		Mockito.when(ticketRepository.findById(ticket.getId())).thenReturn(resultado);
+		assertEquals(resultado, ticketService.listarPorId(ticket.getId()));
+	}
+
+	@Test
+	void testListarPorIdException() {
+		resultado = Optional.of(ticket);
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			Mockito.when(ticketRepository.findById(ticket.getId())).thenReturn(Optional.empty());
+			assertEquals(resultado, ticketService.listarPorId(ticket.getId()));
+		});
+
+		String mensagemEsperada = "Ticket não encontrado";
+		String mensagemAtual = exception.getMessage();
+
+		assertTrue(mensagemAtual.contains(mensagemEsperada));
 	}
 
 	@Test
 	void testListarPorPlaca() {
-		fail("Not yet implemented");
+		lista = new ArrayList<>();
+		lista.add(ticket);
+		lista.add(ticket);
+		lista.add(ticket);
+
+		Mockito.when(ticketRepository.findByVeiculo(ticket.getVeiculo())).thenReturn(lista);
+		Mockito.when(veiculoService.listarVeiculoPorPlaca(ticket.getVeiculo().getPlaca()))
+				.thenReturn(ticket.getVeiculo());
+		assertEquals(lista, ticketService.listarPorPlaca(ticket.getVeiculo().getPlaca()));
+	}
+
+	@Test
+	void testListarPorPlacaException() {
+		lista = new ArrayList<>();
+		lista.add(ticket);
+		lista.add(ticket);
+		lista.add(ticket);
+
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			Mockito.when(ticketRepository.findByVeiculo(ticket.getVeiculo())).thenReturn(null);
+			Mockito.when(veiculoService.listarVeiculoPorPlaca(ticket.getVeiculo().getPlaca()))
+					.thenReturn(ticket.getVeiculo());
+			assertEquals(lista, ticketService.listarPorPlaca(ticket.getVeiculo().getPlaca()));
+		});
+
+		String mensagemEsperada = "Ticket não encontrado";
+		String mensagemAtual = exception.getMessage();
+
+		assertTrue(mensagemAtual.contains(mensagemEsperada));
 	}
 
 	@Test
 	void testListarPorVaga() {
-		fail("Not yet implemented");
+		lista = new ArrayList<>();
+		lista.add(ticket);
+		lista.add(ticket);
+		lista.add(ticket);
+
+		Mockito.when(ticketRepository.findByVaga(ticket.getVaga())).thenReturn(lista);
+		Mockito.when(vagaService.listarPorNumeroVaga(ticket.getVaga().getNumeroVaga())).thenReturn(ticket.getVaga());
+		assertEquals(lista, ticketService.listarPorVaga(ticket.getVaga().getNumeroVaga()));
+	}
+
+	@Test
+	void testListarPorVagaException() {
+		lista = new ArrayList<>();
+		lista.add(ticket);
+		lista.add(ticket);
+		lista.add(ticket);
+
+		Exception exception = assertThrows(NullPointerException.class, () -> {
+			Mockito.when(ticketRepository.findByVaga(ticket.getVaga())).thenReturn(null);
+			Mockito.when(vagaService.listarPorNumeroVaga(ticket.getVaga().getNumeroVaga()))
+					.thenReturn(ticket.getVaga());
+			assertEquals(lista, ticketService.listarPorVaga(ticket.getVaga().getNumeroVaga()));
+		});
+
+		String mensagemEsperada = "Ticket não encontrado";
+		String mensagemAtual = exception.getMessage();
+
+		assertTrue(mensagemAtual.contains(mensagemEsperada));
 	}
 
 	@Test
 	void testFecharTicket() {
-		fail("Not yet implemented");
+		vaga2 = new Vaga();
+		vaga2.setId(1L);
+		vaga2.setNumeroVaga(1);
+		vaga2.setOcupada(true);
+
+		ticket2 = new Ticket(veiculo, vaga, entrada);
+		ticket2.setId(1L);
+		ticket2.setHorarioSaida(null);
+		ticket2.setValoTotal(0.0);
+
+		resultado = Optional.of(ticket2);
+		Mockito.when(ticketRepository.findById(ticket.getId())).thenReturn(resultado);
+		Mockito.when(vagaService.atualizaEstadoVaga(ticket.getVaga().getId())).thenReturn(vaga2);
+		assertEquals("Ticket fechado, o valor de pagamento é: " + ticket2.getValorTotal(),
+				ticketService.fecharTicket(ticket2.getId()));
 	}
 
 	@Test
-	void testCalculaValorFinal() {
-		fail("Not yet implemented");
+	void testFecharTicketQueJaFoiFechado() {
+		vaga2 = new Vaga();
+		vaga2.setId(1L);
+		vaga2.setNumeroVaga(1);
+		vaga2.setOcupada(true);
+
+		ticket.setHorarioSaida(LocalDateTime.now());
+
+		resultado = Optional.of(ticket);
+		Mockito.when(ticketRepository.findById(ticket.getId())).thenReturn(resultado);
+		Mockito.when(vagaService.atualizaEstadoVaga(ticket.getVaga().getId())).thenReturn(vaga2);
+		assertEquals("Esse ticket já foi fechado", ticketService.fecharTicket(ticket.getId()));
+	}
+
+	@Test
+	void testFecharTicketException() {
+		vaga2 = new Vaga();
+		vaga2.setId(1L);
+		vaga2.setNumeroVaga(1);
+		vaga2.setOcupada(true);
+
+		resultado = Optional.of(ticket);
+		assertThrows(NoSuchElementException.class, () -> {
+			Mockito.when(ticketRepository.findById(ticket.getId())).thenReturn(Optional.empty());
+			Mockito.when(vagaService.atualizaEstadoVaga(ticket.getVaga().getId())).thenReturn(vaga2);
+			assertEquals("Ticket fechado, o valor de pagamento é: " + ticket.getValorTotal(),
+					ticketService.fecharTicket(ticket.getId()));
+		});
 	}
 
 }

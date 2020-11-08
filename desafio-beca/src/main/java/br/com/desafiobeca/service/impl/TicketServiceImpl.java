@@ -32,8 +32,9 @@ public class TicketServiceImpl implements TicketService {
 
 		List<Ticket> testeBanco = ticketRepository.findByVeiculo(veiculo);
 		testeBanco.forEach(item -> {
-			if (item.getVaga().isOcupada())
+			if (item.getVaga().isOcupada()) {
 				throw new TicketInvalidoException("Este veículo já está com um ticket em aberto");
+			}
 		});
 
 		if (veiculo.getPlaca().equals(placa) && vaga.getNumeroVaga() == numeroVaga && !(vaga.isOcupada())) {
@@ -41,7 +42,8 @@ public class TicketServiceImpl implements TicketService {
 			Ticket ticket = new Ticket(veiculo, vaga, LocalDateTime.now());
 			ticket.setHorarioSaida(null);
 			ticket.setValoTotal(0.0);
-			return ticketRepository.save(ticket);
+			Ticket retorno = ticketRepository.save(ticket);
+			return retorno;
 		} else {
 			throw new NullPointerException(
 					"Verifique se a placa ou a vaga estão corretos. Lembre-se de que o mesmo veículo "
@@ -54,7 +56,12 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	public Optional<Ticket> listarPorId(Long id) {
-		return ticketRepository.findById(id);
+		Optional<Ticket> ticket = ticketRepository.findById(id);
+		if (ticket.isPresent()) {
+			return ticket;
+		} else {
+			throw new NullPointerException("Ticket não encontrado");
+		}
 	}
 
 	public List<Ticket> listarPorPlaca(String placa) {
@@ -76,18 +83,15 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	public String fecharTicket(Long id) {
-		Ticket ticket = ticketRepository.findById(id).get();
+		Optional<Ticket> optionalTicket = ticketRepository.findById(id);
+		Ticket ticket = optionalTicket.get();
 		if (ticket.getHorarioSaida() != null) {
 			return "Esse ticket já foi fechado";
-		}
-		if (ticket != null && ticket.getHorarioSaida() == null) {
+		} else {
 			ticket.setHorarioSaida(LocalDateTime.now());
 			ticket.setValoTotal(calculaValorFinal(ticket.getHorarioEntrada(), ticket.getHorarioSaida()));
 			vagaServiceImpl.atualizaEstadoVaga(ticket.getVaga().getId());
-			return "Ticket fechado, o valor de pagamento é: "
-					+ calculaValorFinal(ticket.getHorarioEntrada(), ticket.getHorarioSaida());
-		} else {
-			throw new TicketInvalidoException("Este ticket não foi encontrado");
+			return "Ticket fechado, o valor de pagamento é: " + ticket.getValorTotal();
 		}
 	}
 
