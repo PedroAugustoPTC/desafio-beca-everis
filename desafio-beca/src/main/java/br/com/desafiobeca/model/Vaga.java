@@ -54,25 +54,11 @@ public class Vaga {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		Vaga vaga = (Vaga) obj;
+		if ((id == vaga.getId()) && (numeroVaga == vaga.getNumeroVaga())) {
 			return true;
-		if (obj == null)
+		} else {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Vaga other = (Vaga) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (numeroVaga == null) {
-			if (other.numeroVaga != null)
-				return false;
-		} else if (!numeroVaga.equals(other.numeroVaga))
-			return false;
-		if (ocupada != other.ocupada)
-			return false;
-		return true;
+		}
 	}
 }

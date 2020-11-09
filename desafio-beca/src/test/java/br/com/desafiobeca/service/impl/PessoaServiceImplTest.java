@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import br.com.desafiobeca.exceptions.AtualizaPessoaException;
 import br.com.desafiobeca.model.Pessoa;
 import br.com.desafiobeca.repository.PessoaRepository;
 
@@ -73,7 +74,7 @@ class PessoaServiceImplTest {
 
 	@Test
 	void testAtualizarException() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+		Exception exception = assertThrows(AtualizaPessoaException.class, () -> {
 			Mockito.when(pessoaRepository.existsByCpf(pessoa.getCpf())).thenReturn(false);
 			pessoaService.atualizar(pessoa);
 		});

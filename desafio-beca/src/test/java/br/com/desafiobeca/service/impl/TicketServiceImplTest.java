@@ -81,10 +81,18 @@ class TicketServiceImplTest {
 		lista = new ArrayList<>();
 		lista.add(ticket);
 
+		vaga2 = new Vaga();
+		vaga2.setId(1L);
+		vaga2.setNumeroVaga(1);
+		vaga2.setOcupada(true);
+
 		Mockito.when(veiculoService.listarVeiculoPorPlaca(veiculo.getPlaca())).thenReturn(veiculo);
 		Mockito.when(vagaService.listarPorNumeroVaga(vaga.getNumeroVaga())).thenReturn(vaga);
 		Mockito.when(ticketRepository.findByVeiculo(veiculo)).thenReturn(lista);
-		Mockito.when(vagaService.atualizaEstadoVaga(vaga.getId())).thenReturn(vaga);
+		Mockito.when(vagaService.atualizaEstadoVaga(vaga.getId())).thenReturn(vaga2);
+		Mockito.when(ticketRepository.save(ticket)).thenReturn(ticket);
+		System.out.println(ticketRepository.save(ticket));
+		System.out.println(ticketService.salvar(veiculo.getPlaca(), vaga.getNumeroVaga()));
 		assertEquals(ticket, ticketService.salvar(veiculo.getPlaca(), vaga.getNumeroVaga()));
 
 	}

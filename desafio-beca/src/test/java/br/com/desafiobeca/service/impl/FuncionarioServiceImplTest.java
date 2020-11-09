@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import br.com.desafiobeca.exceptions.AtualizaPessoaException;
 import br.com.desafiobeca.model.Funcionario;
 import br.com.desafiobeca.repository.FuncionarioRepository;
 
@@ -78,7 +79,7 @@ class FuncionarioServiceImplTest {
 
 	@Test
 	void testAtualizarException() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+		Exception exception = assertThrows(AtualizaPessoaException.class, () -> {
 			Mockito.when(pessoaService.verificarPessoa(funcionario)).thenReturn(false);
 			funcionarioService.atualizar(funcionario);
 		});

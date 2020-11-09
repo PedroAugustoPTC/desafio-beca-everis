@@ -44,9 +44,9 @@ public class TicketServiceImpl implements TicketService {
 			throw new EntityExistsException("Verifique se a vaga selecionada já não está ocupada");
 
 		} else {
-			vaga = vagaServiceImpl.atualizaEstadoVaga(vaga.getId());
 			Ticket ticket = new Ticket(veiculo, vaga, LocalDateTime.now());
 			Ticket retorno = ticketRepository.save(ticket);
+			vagaServiceImpl.atualizaEstadoVaga(vaga.getId());
 			return retorno;
 		}
 	}
