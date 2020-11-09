@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import br.com.desafiobeca.exceptions.TicketInvalidoException;
 import br.com.desafiobeca.model.Pessoa;
 import br.com.desafiobeca.model.Ticket;
 import br.com.desafiobeca.model.Vaga;
@@ -72,33 +73,38 @@ class TicketServiceImplTest {
 
 		ticket = new Ticket(veiculo, vaga, entrada);
 		ticket.setId(1L);
-		ticket.setHorarioSaida(LocalDateTime.now());
-		ticket.setValoTotal(0.0);
 	}
 
 	@Test
 	void testSalvar() {
+		ticket2 = new Ticket(veiculo, vaga2, entrada);
+		ticket2.setId(1L);
+		ticket2.setHorarioSaida(LocalDateTime.now());
+		ticket2.setValoTotal(0.0);
+
 		lista = new ArrayList<>();
-		lista.add(ticket);
+		lista.add(ticket2);
 
 		vaga2 = new Vaga();
 		vaga2.setId(1L);
 		vaga2.setNumeroVaga(1);
 		vaga2.setOcupada(true);
+
+		ticket.setVaga(vaga2);
 
 		Mockito.when(veiculoService.listarVeiculoPorPlaca(veiculo.getPlaca())).thenReturn(veiculo);
 		Mockito.when(vagaService.listarPorNumeroVaga(vaga.getNumeroVaga())).thenReturn(vaga);
 		Mockito.when(ticketRepository.findByVeiculo(veiculo)).thenReturn(lista);
 		Mockito.when(vagaService.atualizaEstadoVaga(vaga.getId())).thenReturn(vaga2);
 		Mockito.when(ticketRepository.save(ticket)).thenReturn(ticket);
-		System.out.println(ticketRepository.save(ticket));
-		System.out.println(ticketService.salvar(veiculo.getPlaca(), vaga.getNumeroVaga()));
+
 		assertEquals(ticket, ticketService.salvar(veiculo.getPlaca(), vaga.getNumeroVaga()));
 
 	}
 
 	@Test
-	void testSalvarNullPointerException() {
+	void testSalvarTicketInvalidoException() {
+		ticket.setHorarioSaida(null);
 		lista = new ArrayList<>();
 		lista.add(ticket);
 
@@ -107,14 +113,13 @@ class TicketServiceImplTest {
 		vaga2.setNumeroVaga(1);
 		vaga2.setOcupada(true);
 
-		Exception exception = assertThrows(NullPointerException.class, () -> {
+		Exception exception = assertThrows(TicketInvalidoException.class, () -> {
 			Mockito.when(veiculoService.listarVeiculoPorPlaca(veiculo.getPlaca())).thenReturn(veiculo);
-			Mockito.when(vagaService.listarPorNumeroVaga(vaga.getNumeroVaga())).thenReturn(vaga2);
+			Mockito.when(vagaService.listarPorNumeroVaga(vaga.getNumeroVaga())).thenReturn(vaga);
 			Mockito.when(ticketRepository.findByVeiculo(veiculo)).thenReturn(lista);
-			Mockito.when(vagaService.atualizaEstadoVaga(vaga.getId())).thenReturn(vaga2);
 		});
 
-		String mensagemEsperada = "Verifique se a vaga selecionada já não está ocupada";
+		String mensagemEsperada = "Este veículo já está com um ticket em aberto";
 		String mensagemAtual = exception.getMessage();
 
 		assertTrue(mensagemAtual.contains(mensagemEsperada));

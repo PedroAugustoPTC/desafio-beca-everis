@@ -60,13 +60,29 @@ public class Veiculo {
 
 	@Override
 	public boolean equals(Object obj) {
-		Veiculo veiculo = (Veiculo) obj;
-		if ((id == veiculo.getId()) && (placa.equals(veiculo.getPlaca()))
-				&& (proprietario.equals(veiculo.getProprietario()))) {
+		if (this == obj)
 			return true;
-		} else {
+		if (obj == null)
 			return false;
-		}
+		if (getClass() != obj.getClass())
+			return false;
+		Veiculo other = (Veiculo) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (placa == null) {
+			if (other.placa != null)
+				return false;
+		} else if (!placa.equals(other.placa))
+			return false;
+		if (proprietario == null) {
+			if (other.proprietario != null)
+				return false;
+		} else if (!proprietario.equals(other.proprietario))
+			return false;
+		return true;
 	}
 
 }

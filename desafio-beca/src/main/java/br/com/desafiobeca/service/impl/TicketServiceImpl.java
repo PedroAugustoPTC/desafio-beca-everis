@@ -45,9 +45,8 @@ public class TicketServiceImpl implements TicketService {
 
 		} else {
 			Ticket ticket = new Ticket(veiculo, vaga, LocalDateTime.now());
-			Ticket retorno = ticketRepository.save(ticket);
 			vagaServiceImpl.atualizaEstadoVaga(vaga.getId());
-			return retorno;
+			return ticketRepository.save(ticket);
 		}
 	}
 

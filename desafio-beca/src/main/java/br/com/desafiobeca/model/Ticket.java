@@ -103,13 +103,46 @@ public class Ticket {
 
 	@Override
 	public boolean equals(Object obj) {
-		Ticket ticket = (Ticket) obj;
-		if ((id == ticket.getId()) && (veiculo.equals(ticket.getVeiculo())) && (vaga.equals(ticket.getVaga()))
-				&& (horarioEntrada.equals(ticket.getHorarioEntrada()))) {
+		if (this == obj)
 			return true;
-		} else {
+		if (obj == null)
 			return false;
-		}
+		if (getClass() != obj.getClass())
+			return false;
+		Ticket other = (Ticket) obj;
+		if (horarioEntrada == null) {
+			if (other.horarioEntrada != null)
+				return false;
+		} else if (!horarioEntrada.equals(other.horarioEntrada))
+			return false;
+		if (horarioSaida == null) {
+			if (other.horarioSaida != null)
+				return false;
+		} else if (!horarioSaida.equals(other.horarioSaida))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (vaga == null) {
+			if (other.vaga != null)
+				return false;
+		} else if (!vaga.equals(other.vaga))
+			return false;
+		if (valorTotal == null) {
+			if (other.valorTotal != null)
+				return false;
+		} else if (!valorTotal.equals(other.valorTotal))
+			return false;
+		if (veiculo == null) {
+			if (other.veiculo != null)
+				return false;
+		} else if (!veiculo.equals(other.veiculo))
+			return false;
+		return true;
 	}
+
+	
 
 }
